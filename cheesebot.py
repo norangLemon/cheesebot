@@ -7,7 +7,7 @@ def send_msg(channel, msg):
     irc.send(bytes('PRIVMSG ' + channel + ' :' + msg + '\n', UTF8))
 
 def pong():
-    irc.send("PONG :pingpong\n")
+    irc.send(bytes("PONG :pingpong\n"))
 
 def join(channel, msg):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
@@ -27,10 +27,30 @@ def run():
             continue
         msg = IRCMessage(ircmsg_raw)
         print(msg)
-
-        if msg.msgType == "PRIVMSG":
+        
+        if msg.msgType == "INVITE":
+            join(msg.channel)
+            send_msg(msg.channel, MSG_ENTER)
+        
+        elif msg.msgType == "MODE":
+            if msg.msg == "+o " + NICK:
+                send_msg(msg.channel, MSG_OP)
+            elif msg.msg == "-o " + NICK:
+                send_msg(msg.channel, MSG_DEOP)
+        elif msg.msgType == "PRIVMSG":
             if msg.msg == NICK + " 살아있니?":
                 send_msg(msg.channel, MSG_YES)
+
+            elif msg.msg.find("참치") != -1:
+                send_msg(msg.channel, MSG_INTEREST)
+
+            elif msg.msg == "쓰담쓰담":
+                send_msg(msg.channel, MSG_SATISFYING)
+
+            elif msg.msg == "멍멍":
+                send_msg(msg.channel, MSG_HATE)
+
+
 
 irc_raw = socket.socket()
 irc_raw.connect((HOST, PORT))
