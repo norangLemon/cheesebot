@@ -29,8 +29,8 @@ def run():
         print(msg)
         
         if msg.msgType == "INVITE":
-            join(msg.channel)
-            send_msg(msg.channel, MSG_ENTER)
+            join(msg.channel, MSG_ENTER)
+            send_msg(msg.channel, "초대해줘서 고맙다냥!")
         
         elif msg.msgType == "MODE":
             if msg.msg == "+o " + NICK:
