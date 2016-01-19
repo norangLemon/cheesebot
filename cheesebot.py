@@ -13,6 +13,10 @@ def join(channel, msg):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
     send_msg(channel, msg)
 
+def quit(channel, msg):
+    send_msg(channel, msg)
+    irc.send(bytes("PART %s\r\n" %channel, UTF8))
+
 def run():
     while 1:
         ircmsg_raw = irc.recv(8192).decode(UTF8)
@@ -41,6 +45,9 @@ def run():
         elif msg.msgType == "PRIVMSG":
             if msg.msg == NICK + " 살아있니?":
                 send_msg(msg.channel, MSG_YES)
+
+            elif msg.msg == "돌아가!" || msg.msg == "사라져버려!":
+                quit(msg.channel, MSG_EXIT)
 
             elif msg.msg.find("참치") != -1:
                 send_msg(msg.channel, MSG_INTEREST)

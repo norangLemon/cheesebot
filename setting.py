@@ -11,6 +11,7 @@ hate = ["캬옹!", "ㅍㅅㅍ)", "와아아아옹...."]
 
 MSG_YES = "그렇다옹"
 MSG_ENTER = "내가 왔다냥"
+MSG_EXIT = "ㅇㅅㅠ 알았다냥"
 MSG_DEOP = "냥무룩.."
 MSG_OP = "고맙다냥♥"
 MSG_INTEREST = '!!'
