@@ -6,4 +6,4 @@ ID = "norang_cheese"
 CHANNEL = "#norang"
 
 MSG_YES = "그렇다옹"
-MEG_ENTER = "내가 왔다냥"
+MSG_ENTER = "내가 왔다냥"

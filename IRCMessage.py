@@ -15,8 +15,6 @@ class IRCMessage():
             self.msgType = parse.group(2)
             self.channel = parse.group(3)
             self.msg = parse.group(4)
-            if self.msg:
-                self.msg = self.msg.decode('utf-8')
             if self.msgType == 'INVITE':
                 self.channel = parse.group(4)
         else:

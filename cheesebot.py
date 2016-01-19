@@ -1,23 +1,25 @@
 #-*- coding: utf-8 -*-
 import socket, ssl, re
 from setting import *
+from IRCMessage import *
 
 def send_msg(channel, msg):
-    irc.send('PRIVMSG ' + chan + ' :' + msg + '\n')
+    irc.send(bytes('PRIVMSG ' + channel + ' :' + msg + '\n', UTF8))
 
 def pong():
     irc.send("PONG :pingpong\n")
 
 def join(channel, msg):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
-    send_msg(jannel, msg)
+    send_msg(channel, msg)
 
 def run():
     while 1:
-        ircmsg_raw = irc.recv(8192).strip("\n\r")decode(UTF8)
+        ircmsg_raw = irc.recv(8192).decode(UTF8)
+        ircmsg_raw = ircmsg_raw.strip("\n\r")
         print (ircmsg_raw)
 
-        if ircmsg.find("PING :") != -1:
+        if ircmsg_raw.find("PING :") != -1:
             pong()
             continue
         
