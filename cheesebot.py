@@ -7,7 +7,7 @@ def send_msg(channel, msg):
     irc.send(bytes('PRIVMSG ' + channel + ' :' + msg + '\n', UTF8))
 
 def pong():
-    irc.send(bytes("PONG :pingpong\n"))
+    irc.send(bytes("PONG :pingpong\n", UTF8))
 
 def join(channel, msg):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
@@ -37,6 +37,7 @@ def run():
                 send_msg(msg.channel, MSG_OP)
             elif msg.msg == "-o " + NICK:
                 send_msg(msg.channel, MSG_DEOP)
+                
         elif msg.msgType == "PRIVMSG":
             if msg.msg == NICK + " 살아있니?":
                 send_msg(msg.channel, MSG_YES)
