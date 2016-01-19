@@ -46,7 +46,7 @@ def run():
             if msg.msg == NICK + " 살아있니?":
                 send_msg(msg.channel, MSG_YES)
 
-            elif msg.msg == "돌아가!" || msg.msg == "사라져버려!":
+            elif msg.msg == "돌아가!" or msg.msg == "사라져버려!":
                 quit(msg.channel, MSG_EXIT)
 
             elif msg.msg.find("참치") != -1:
