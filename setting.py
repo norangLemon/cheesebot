@@ -17,4 +17,8 @@ MSG_OP = "고맙다냥♥"
 MSG_INTEREST = '!!'
 MSG_SATISFYING = '고릉고릉'
 MSG_HATE = '캬옹!'
+MSG_CURIOUS = '냐아? ㅇㅅㅇ?'
+MSG_BYE = '히잉.. 알았다옹...'
+
+SENDER_BYB_BOT = 'BYBbot@115.68.27.121'
 

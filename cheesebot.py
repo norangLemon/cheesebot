@@ -13,9 +13,13 @@ def join(channel, msg):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
     send_msg(channel, msg)
 
-def quit(channel, msg):
+def part(channel, msg):
     send_msg(channel, msg)
     irc.send(bytes("PART %s\r\n" %channel, UTF8))
+
+def quit(channel, msg):
+    send_msg(channel, msg)
+    irc.send(bytes("QUIT\r\n", UTF8))
 
 def run():
     while 1:
@@ -34,20 +38,22 @@ def run():
         
         if msg.msgType == "INVITE":
             join(msg.channel, MSG_ENTER)
-            send_msg(msg.channel, "초대해줘서 고맙다냥!")
+            send_msg(msg.channel, msg.nick+", 초대해줘서 고맙다냥!")
         
         elif msg.msgType == "MODE":
             if msg.msg == "+o " + NICK:
-                send_msg(msg.channel, MSG_OP)
+                send_msg(msg.channel, msg.nick+"님, "+MSG_OP)
             elif msg.msg == "-o " + NICK:
                 send_msg(msg.channel, MSG_DEOP)
+            elif msg.msg.find(NICK) != -1:
+                send_msg(msg.channel, MSG_CURIOUS)
                 
         elif msg.msgType == "PRIVMSG":
             if msg.msg == NICK + " 살아있니?":
                 send_msg(msg.channel, MSG_YES)
 
             elif msg.msg == "돌아가!" or msg.msg == "사라져버려!":
-                quit(msg.channel, MSG_EXIT)
+                part(msg.channel, MSG_EXIT)
 
             elif msg.msg.find("참치") != -1:
                 send_msg(msg.channel, MSG_INTEREST)
@@ -57,6 +63,12 @@ def run():
 
             elif msg.msg == "멍멍":
                 send_msg(msg.channel, MSG_HATE)
+            elif msg.msg == NICK + ", 자러 갈 시간이야":
+                if msg.nick == 'norang':
+                    quit(msg.channel, MSG_BYE)
+                else:
+                    send_msg(msg.channel, "난 주인님 말씀만 듣는다냥!")
+                
 
 
 
