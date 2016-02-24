@@ -1,2 +1,5 @@
 *.swp
 *.pyc
+*.db
+*.log
+setting.py
