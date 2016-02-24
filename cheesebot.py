@@ -3,6 +3,7 @@ import socket, ssl, re
 import Value
 from setting import *
 from Message import *
+from Log import *
 
 def send_msg(channel, txt):
     irc.send(bytes('PRIVMSG ' + channel + ' :' + txt + '\n', UTF8))
@@ -22,6 +23,8 @@ def quit(channel, txt):
     send_msg(channel, txt)
     irc.send(bytes("QUIT\r\n", UTF8))
 
+def react_part(msg):
+    part(msg.channel, Value.randPartMsg(msg))
 
 def react_invite(msg):
     irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
@@ -41,7 +44,7 @@ def react_RUOK(msg):
 def react_tuna(msg):
     send_msg(msg.channel, Value.randTunaMsg(msg))
 
-def react_goAaway(msg):
+def react_goAway(msg):
     part(msg.channel, Value.randPartMsg(msg))
 
 def react_loveU(msg):
@@ -58,9 +61,15 @@ def react_sleep(msg):
 
 def run():
     while 1:
-        ircmsg_raw = irc.recv(8192).decode(UTF8)
+        try:
+            ircmsg_raw = irc.recv(8192).decode(UTF8)
+        except KeyboardInterupt:
+            quit(CHANNEL, "난 자러 간다냥!")
+        except err:
+            prtErr(err)
+            continue
         ircmsg_raw = ircmsg_raw.strip("\n\r")
-
+        
         if ircmsg_raw.find("PING :") != -1:
             pong()
             continue
@@ -91,7 +100,7 @@ def run():
                 react_sleep(msg)
 
         else:
-            print(msg)
+            prtLog(msg)
                 
 
 
