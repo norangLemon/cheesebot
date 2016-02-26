@@ -1,5 +1,6 @@
 from DB import *
 from Message import *
+from Log import *
 from datetime import datetime
 
 class Person():
@@ -8,7 +9,7 @@ class Person():
     name = None
     affection = 0
     lastPat = None
-    firstPat = "16-01-01 00:00"
+    firstPat = None
     secondPat = None
     thirdPat = None
     def __init__(self, ary = None, msg=None):
@@ -35,11 +36,14 @@ class Person():
         if self.isAnnoying():
             amount = -10
             result = False
+        prtLog(self.nick + ": "+ str(self.affection) + "+" + str(amount))
         self.affection += amount
+
         if self.affection > MAX_AFFECTION:
             self.affection = MAX_AFFECTION
-        elif self.affection + amount < MIN_AFFECTION:
+        elif self.affection < MIN_AFFECTION:
             self.affection = MIN_AFFECTION
+        prtLog("= "+str(self.affection))
         updateData(self)
         return result
 
@@ -50,9 +54,11 @@ class Person():
         if self.isAnnoying():
             amount = 10
             result = False
+        prtLog(self.nick + ": "+ str(self.affection) + "-" + str(amount))
         self.affection -= amount
-        if self.affection > MIN_AFFECTION:
+        if self.affection < MIN_AFFECTION:
             self.affection = MIN_AFFECTION
+        prtLog("= "+str(self.affection))
         updateData(self)
         return result
 
@@ -71,7 +77,7 @@ class Person():
         self.lastPat = datetime.now().strftime("%y-%m-%d %H:%M:%S")
 
     def isAnnoying(self):
-        if self.firstPat == None:
+        if self.firstPat == None or self.firstPat=='':
             return False
         elif self.firstPat[:12] == self.lastPat[:12]:
             first = int(self.fisrtPat[12:14])*60 + int(self.firstPat[15:17])

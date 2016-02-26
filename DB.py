@@ -12,19 +12,12 @@ def insertData(person):
     connection.commit()
 
 def updateData(person):
-    if person.ID != ID_BYB_BOT:
-        cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s', firstPat = '%s', secondPat = '%s', thirdPat ='%s' WHERE ID='%s'"\
-                % (person.name, person.affection, person.lastPat, person.firstPat, person.secondPat, person.thirdPat, person.ID))
-    else:
-        cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s', firstPat = '%s', secondPat = '%s', thirdPat ='%s' WHERE nick='%s'"\
-            %(person.name, person.affection, person.lastPat, person.firstPat, person.secondPat, person.thirdPat, person.nick))
+    cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s', firstPat = '%s', secondPat = '%s', thirdPat ='%s' WHERE ID='%s' AND nick ='%s'"\
+                % (person.name, person.affection, person.lastPat, person.firstPat, person.secondPat, person.thirdPat, person.ID, person.nick))
     connection.commit()
 
 def search(msg):
-    if msg.ID != ID_BYB_BOT:
-        cursor.execute("SELECT * FROM People WHERE ID='%s'" %msg.ID)
-    else: 
-        cursor.execute("SELECT * FROM People WHERE nick='%s'" %msg.nick)
+    cursor.execute("SELECT * FROM People WHERE ID='%s' AND nick='%s'" %(msg.ID, msg.nick))
     result = cursor.fetchall()
     if len(result) == 1:
         return (result[0])

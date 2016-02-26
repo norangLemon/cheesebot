@@ -34,7 +34,7 @@ class Message:
                 self.channel = parse.group(4)
                 self.msg = parse.group(5)
                 if self.ID == ID_BYB_BOT:
-                    byb_parse = re.match('< (.+)> (.+)', self.msg)
+                    byb_parse = re.match('< (.+?)> (.+)', self.msg)
                     if byb_parse:
                         self.nick = byb_parse.group(1)
                         self.msg = byb_parse.group(2)

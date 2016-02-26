@@ -25,11 +25,13 @@ def quit(channel, txt):
     irc.send(bytes("QUIT\r\n", UTF8))
 
 def react_part(msg):
+    prtLog("part: "+msg.nick)
     part(msg.channel, Value.randPartMsg(msg))
     getPerson(msg).minus(MEDIUM)
 
 def react_invite(msg):
     prtLog(msg)
+    prtLog("invite"+msg.nick)
     irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
     send_msg(msg.channel, Value.randJoinMsg(msg))
     getPerson(msg).plus(LITTLE)
@@ -43,6 +45,7 @@ def react_mode(msg):
         send_msg(msg.channel, Value.randCuriousMsg(msg))
 
 def react_RUOK(msg):
+    prtLog("RUOK: "+msg.nick)
     if getPerson(msg).plus(LITTLE):
         send_msg(msg.channel, Value.randOKMsg(msg))
     else:
@@ -52,10 +55,12 @@ def react_tuna(msg):
     send_msg(msg.channel, Value.randTunaMsg(msg))
 
 def react_goAway(msg):
+    prtLog("goAway: "+msg.nick)
     part(msg.channel, Value.randPartMsg(msg))
     getPerson(msg).minus(MEDIUM)
 
 def react_loveU(msg):
+    prtLog("pat: "+msg.nick)
     value = getPerson(msg).plus(MAX)
     if value:
         send_msg(msg.channel, Value.randSatisfyMsg(msg))
@@ -63,12 +68,14 @@ def react_loveU(msg):
         send_msg(msg.channel, Value.randAnnoyedMsg(msg))
     
 def react_dog(msg):
+    prtLog("dog: "+msg.nick)
     if getPerson(msg).minus(LITTLE):
         send_msg(msg.channel, Value.randHateMsg(msg))
     else:
         send_msg(msg.channel, Value.randAnnoyedMsg(msg))
 
 def react_sleep(msg):
+    prtLog("sleep: "+msg.nick)
     if msg.ID == ID_NORANG:
         quit(msg.channel, Value.randQuitMsg(msg))
         return True
