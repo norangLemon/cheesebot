@@ -1,4 +1,5 @@
 import random
+from setting import *
 
 def randJoinMsg(msg):
     list = ["안녕하세요냥!", "내가 왔다냥!", msg.nick+"님, 불러주셔서 고맙다냥!", ">ㅅ<냐옹!"]
@@ -45,4 +46,16 @@ def randCuriousMsg(msg):
     list = [msg.nick + "님, 뭐 한거냐요냥?", "냐아?", "내 이름을 본거 같은데냥?!"]
     return random.choice(list)
 
+def howMuchLoveMsg(msg, affection):
+    if affection > MAX_AFFECTION * 4/5:
+        list = [msg.nick+"님 엄청 좋아한다냥!", "당연히 최고 좋아한다냥!", "냐앙..(부끄)//ㅅ//"]
+    elif affection > MAX_AFFECTION *1/3:
+        list = ["헤헤.. "+msg.name+"님이랑 나랑은 꽤 친하지요냥?", "우웅.. 참치 다음으로 좋아한다냥!>ㅅ<"]
+    elif affection > MIN_AFFECTION *1/3:
+        list = ["후웅..?", "좀 더 쓰다듬고 나서 물어봐달라냥!", msg.nick+"님이랑 나랑 아는 사이었냥..?"]
+    elif affection > MIN_AFFECTION * 4/5:
+        list = ["흥!",  msg.nick +"님한테는 지금 삐져있다냥!", "ㅡㅅㅡ..."]
+    else:
+        list = ["캬아아옹!", "우왜야아옹.. 또 괴롭히려고 그러냥!!", "히이잉..ㅠㅅㅠ", "와아앙! "+msg.nick+"님이 또 괴롭힌다냥!ㅠㅅㅠ"]
+    return list
 

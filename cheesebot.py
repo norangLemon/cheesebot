@@ -4,6 +4,7 @@ import Value
 from setting import *
 from Message import *
 from Log import *
+from Person import *
 
 def send_msg(channel, txt):
     irc.send(bytes('PRIVMSG ' + channel + ' :' + txt + '\n', UTF8))
@@ -25,10 +26,12 @@ def quit(channel, txt):
 
 def react_part(msg):
     part(msg.channel, Value.randPartMsg(msg))
+    getPerson(msg).minus(MEDIUM)
 
 def react_invite(msg):
     irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
     send_msg(msg.channel, Value.randJoinMsg(msg))
+    getPerson(msg).plus(LITTL)
 
 def react_mode(msg):
     if msg.msg == "+o " + NICK:
@@ -40,34 +43,45 @@ def react_mode(msg):
 
 def react_RUOK(msg):
     send_msg(msg.channel, Value.randOKMsg(msg))
+    getPerson(msg).plus(LITTLE)
 
 def react_tuna(msg):
     send_msg(msg.channel, Value.randTunaMsg(msg))
 
 def react_goAway(msg):
     part(msg.channel, Value.randPartMsg(msg))
+    getPerson(msg).minus(MEDIUM)
 
 def react_loveU(msg):
     send_msg(msg.channel, Value.randSatisfyMsg(msg))
+    getPerson(msg).plus(MAX)
     
 def react_dog(msg):
     send_msg(msg.channel, Value.randHateMsg(msg))
+    getPerson(msg).minus(LITTLE)
 
 def react_sleep(msg):
     if msg.ID == ID_NORANG:
         quit(msg.channel, Value.randQuitMsg(msg))
     else:
         send_msg(msg.channel, Value.randNoQuitMsg(msg))
+        getPerson(msg).minux(MAX)
+
+def react_howMuchLove(msg):
+    react = Value.howMuchLoveMsg(msg, getPerson(msg).getAffection())
+    send_msg(msg.channel, react)
 
 def run():
     while 1:
         try:
             ircmsg_raw = irc.recv(8192).decode(UTF8)
-        except KeyboardInterupt:
+        except KeyboardInterrupt:
             quit(CHANNEL, "난 자러 간다냥!")
-        except err:
+            return
+        except UnicodeDecodeError as err:
             prtErr(err)
             continue
+
         ircmsg_raw = ircmsg_raw.strip("\n\r")
         
         if ircmsg_raw.find("PING :") != -1:
@@ -76,6 +90,7 @@ def run():
         
         if ircmsg_raw[0] != ':':
             continue
+
         msg = Message(ircmsg_raw)
         
         if msg.msgType == "INVITE":
@@ -98,19 +113,22 @@ def run():
 
             elif msg.msg == NICK + ", 자러 갈 시간이야":
                 react_sleep(msg)
+                return
+            elif msg.msg == NICK + ", 나 얼마나 좋아해?":
+                react_howMuchLove(msg)
 
         else:
-            prtLog(msg)
+            prtLog(str(msg))
                 
 
 
+if __name__ == "__main__":
+    irc_raw = socket.socket()
+    irc_raw.connect((HOST, PORT))
+    irc = ssl.wrap_socket(irc_raw)
+    irc.send(bytes("NICK " + NICK + "\r\n", UTF8))
+    irc.send(bytes("USER %s %s %s : %s\r\n" %(ID, ID, HOST, ID), UTF8))
+    print("연결되었습니다.")
+    join(CHANNEL, "일어났다!")
 
-irc_raw = socket.socket()
-irc_raw.connect((HOST, PORT))
-irc = ssl.wrap_socket(irc_raw)
-irc.send(bytes("NICK " + NICK + "\r\n", UTF8))
-irc.send(bytes("USER %s %s %s : %s\r\n" %(ID, ID, HOST, ID), UTF8))
-print("연결되었습니다.")
-join(CHANNEL, "일어났다!")
-
-run()
+    run()
