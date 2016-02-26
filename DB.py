@@ -2,22 +2,22 @@ import sqlite3
 import sys
 from Log import *
 from setting import *
-from Person import *
+from datetime import datetime
 
 connection = sqlite3.connect(DB_PEOPLE)
 cursor = connection.cursor()
 def insertData(person):
-    cursor.execute("INSERT INTO People VALUES('%s', '%s', '%s',  %d, '%s')"\
-                    %(person.ID, person.nick, person.name, person.affection, person.lastPat))
+    cursor.execute("INSERT INTO People VALUES('%s', '%s', '%s',  %d, '%s', '%s', '%s', '%s')"\
+                    %(person.ID, person.nick, person.name, person.affection, person.lastPat, person.firstPat, person.secondPat, person.thirdPat))
     connection.commit()
 
 def updateData(person):
     if person.ID != ID_BYB_BOT:
-        cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s' WHERE ID='%s'"\
-                % (person.name, person.affection, person.lastPat, person.ID))
+        cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s', firstPat = '%s', secondPat = '%s', thirdPat ='%s' WHERE ID='%s'"\
+                % (person.name, person.affection, person.lastPat, person.firstPat, person.secondPat, person.thirdPat, person.ID))
     else:
-        cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s' WHERE nick='%s'"\
-            %(person.name, person.affection, person.lastPat, person.nick))
+        cursor.execute("UPDATE People SET name = '%s', affection=%d, lastPat='%s', firstPat = '%s', secondPat = '%s', thirdPat ='%s' WHERE nick='%s'"\
+            %(person.name, person.affection, person.lastPat, person.firstPat, person.secondPat, person.thirdPat, person.nick))
     connection.commit()
 
 def search(msg):
@@ -27,28 +27,32 @@ def search(msg):
         cursor.execute("SELECT * FROM People WHERE nick='%s'" %msg.nick)
     result = cursor.fetchall()
     if len(result) == 1:
-        return Person(result[0][0], result[0][1], result[0][2], result[0][3], result[0][4])
+        return (result[0])
+
     elif len(result) == 0:
-        prtLog("There's no nick %s's DB" %msg.nick)
+        prtLog("There's no '%s' in DB" %msg.nick)
     else:
         prtErr("nick %s:\n %s" %str(result))
     return None
 
 def createDB(cursor):
-    cursor.execute("CREATE TABLE People(ID text, nick text, name text, affection int, lastPat text)")
+    cursor.execute("CREATE TABLE People(ID text, nick text, name text, affection int, lastPat text, firstPat text, secondPat text, thirdPat text)")
+    cursor.execute("INSERT INTO People VALUES('%s', '%s', '%s',  %d, '%s')"\
+            %(ID_NORANG, 'norang', '주인님', MAX_AFFECTION, datetime.now().strftime("%y-%m-%d %H:%M:%S")))
     connection.commit()
     prtInfo("DB is created!")
 
 def printDB(cursor):
     num = 0
-    print("ID\t\t\t\t\tnick\t\tname\t\taffection\tlast pat")
+    print("ID\t\t\tnick\t\tname\t\taffection\tlast pat\tfirst pat")
     print("--------------------------------------------")
     for row in cursor.execute("SELECT * FROM People ORDER BY affection"):
-        print("%s\t\t\t\t\t%s\t\t%s\t\t%d\t%s"
-                % (row[0], row[1], row[2], row[3], row[4]))
+        print("%s\t\t\t\t\t%s\t\t%s\t\t%d\t%s\t%s"
+                % (row[0], row[1], row[2], row[3], row[4], row[5]))
         num += 1
     print("--------------------------------------------")
     print("total: %d" %num)
+
 
 
 if __name__ == "__main__":
@@ -57,6 +61,10 @@ if __name__ == "__main__":
             createDB(cursor)
         elif sys.argv[1] == "print":
             printDB(cursor)
+    elif len(sys.argv) == 3:
+        if sys.argv[1] == "sql":
+            cursor.execute(sys.argv[2])
+            connection.commit()
     else:
-        print("create or print")
+        print("create or print or sql")
 

@@ -57,5 +57,7 @@ def howMuchLoveMsg(msg, affection):
         list = ["흥!",  msg.nick +"님한테는 지금 삐져있다냥!", "ㅡㅅㅡ..."]
     else:
         list = ["캬아아옹!", "우왜야아옹.. 또 괴롭히려고 그러냥!!", "히이잉..ㅠㅅㅠ", "와아앙! "+msg.nick+"님이 또 괴롭힌다냥!ㅠㅅㅠ"]
-    return list
-
+    return random.choice(list)
+def randAnnoyedMsg(msg):
+    list = ["자꾸 그러면 삐진다냥!", "귀찮게 하지 말라냐앙!", "히잉.. "+msg.nick+"님은 할 일도 없냥?!"]
+    return random.choice(list)

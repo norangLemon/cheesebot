@@ -41,11 +41,11 @@ class Message:
             else:
                 pass
 
-        def __repr__(self):
-            return ('Message<type: %s chan: %s ID: %s nick: %s target: %s>'
+    def __repr__(self):
+        return ('Message<type: %s chan: %s ID: %s nick: %s target: %s>'
                     %(self.msgType, self.channel, self.ID, self.nick, self.target))
 
-        def __str__(self):
-            return ('Message<type: %s chan: %s ID: %s nick: %s target: %s>'
+    def __str__(self):
+        return ('Message<type: %s chan: %s ID: %s nick: %s target: %s>'
                     %(self.msgType, self.channel, self.ID, self.nick, self.target))
 

@@ -29,9 +29,10 @@ def react_part(msg):
     getPerson(msg).minus(MEDIUM)
 
 def react_invite(msg):
+    prtLog(msg)
     irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
     send_msg(msg.channel, Value.randJoinMsg(msg))
-    getPerson(msg).plus(LITTL)
+    getPerson(msg).plus(LITTLE)
 
 def react_mode(msg):
     if msg.msg == "+o " + NICK:
@@ -42,8 +43,10 @@ def react_mode(msg):
         send_msg(msg.channel, Value.randCuriousMsg(msg))
 
 def react_RUOK(msg):
-    send_msg(msg.channel, Value.randOKMsg(msg))
-    getPerson(msg).plus(LITTLE)
+    if getPerson(msg).plus(LITTLE):
+        send_msg(msg.channel, Value.randOKMsg(msg))
+    else:
+        send_msg(msg.clue.randAnnoyedMsg(msg))
 
 def react_tuna(msg):
     send_msg(msg.channel, Value.randTunaMsg(msg))
@@ -53,19 +56,28 @@ def react_goAway(msg):
     getPerson(msg).minus(MEDIUM)
 
 def react_loveU(msg):
-    send_msg(msg.channel, Value.randSatisfyMsg(msg))
-    getPerson(msg).plus(MAX)
+    value = getPerson(msg).plus(MAX)
+    if value:
+        send_msg(msg.channel, Value.randSatisfyMsg(msg))
+    else:
+        send_msg(msg.channel, Value.randAnnoyedMsg(msg))
     
 def react_dog(msg):
-    send_msg(msg.channel, Value.randHateMsg(msg))
-    getPerson(msg).minus(LITTLE)
+    if getPerson(msg).minus(LITTLE):
+        send_msg(msg.channel, Value.randHateMsg(msg))
+    else:
+        send_msg(msg.channel, Value.randAnnoyedMsg(msg))
 
 def react_sleep(msg):
     if msg.ID == ID_NORANG:
         quit(msg.channel, Value.randQuitMsg(msg))
+        return True
     else:
-        send_msg(msg.channel, Value.randNoQuitMsg(msg))
-        getPerson(msg).minux(MAX)
+        if getPerson(msg).minus(MAX):
+            send_msg(msg.channel, Value.randNoQuitMsg(msg))
+        else:
+            send_msg(msg.channel, Value.randAnnoyedMsg(msg))
+        return False
 
 def react_howMuchLove(msg):
     react = Value.howMuchLoveMsg(msg, getPerson(msg).getAffection())
@@ -77,9 +89,18 @@ def run():
             ircmsg_raw = irc.recv(8192).decode(UTF8)
         except KeyboardInterrupt:
             quit(CHANNEL, "난 자러 간다냥!")
+            prtLog("ctrl+c")
             return
+
         except UnicodeDecodeError as err:
+            prtErr("Unicode Error!")
+            prtLog(ircmsg_raw)
             prtErr(err)
+            continue
+
+        except:
+            prtLog(ircmsg_raw)
+            prtLog("?")
             continue
 
         ircmsg_raw = ircmsg_raw.strip("\n\r")
@@ -112,8 +133,8 @@ def run():
                 react_dog(msg)
 
             elif msg.msg == NICK + ", 자러 갈 시간이야":
-                react_sleep(msg)
-                return
+                if react_sleep(msg):
+                    return
             elif msg.msg == NICK + ", 나 얼마나 좋아해?":
                 react_howMuchLove(msg)
 
