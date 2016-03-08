@@ -1,6 +1,7 @@
 from DB import *
 from Message import *
 from Log import *
+from setting import *
 from datetime import datetime
 
 class Person():
@@ -26,7 +27,7 @@ class Person():
             self.ID = msg.ID
             self.nick = msg.nick
             self.name = msg.nick
-            self.lastPat = datetime.now().strftime("%y-%m-%d %H:%M:%S")
+            self.lastPat = datetime.now().strftime(TIME_FORMAT)
 
     
     def plus(self, amount):
@@ -36,14 +37,12 @@ class Person():
         if self.isAnnoying():
             amount = -10
             result = False
-        prtLog(self.nick + ": "+ str(self.affection) + "+" + str(amount))
         self.affection += amount
 
         if self.affection > MAX_AFFECTION:
             self.affection = MAX_AFFECTION
         elif self.affection < MIN_AFFECTION:
             self.affection = MIN_AFFECTION
-        prtLog("= "+str(self.affection))
         updateData(self)
         return result
 
@@ -54,11 +53,9 @@ class Person():
         if self.isAnnoying():
             amount = 10
             result = False
-        prtLog(self.nick + ": "+ str(self.affection) + "-" + str(amount))
         self.affection -= amount
         if self.affection < MIN_AFFECTION:
             self.affection = MIN_AFFECTION
-        prtLog("= "+str(self.affection))
         updateData(self)
         return result
 
@@ -77,12 +74,15 @@ class Person():
         self.lastPat = datetime.now().strftime("%y-%m-%d %H:%M:%S")
 
     def isAnnoying(self):
-        if self.firstPat == None or self.firstPat=='':
-            return False
-        elif self.firstPat[:12] == self.lastPat[:12]:
-            first = int(self.fisrtPat[12:14])*60 + int(self.firstPat[15:17])
-            last = int(self.lastPat[12:14])*60 + int(self.lastPat[15:17])
-            return (last-first < 10)
+        try:
+            print("parse")
+            first = datetime.strptime(self.firstPat, TIME_FORMAT)
+            last = datetime.strptime(self.lastPat, TIME_FORMAT)
+            result = last - first
+            return (result.seconds <10)
+        except Exception as err:
+            prtErr(err)
+            prtErr(self.firstPat)
         return False
 
 

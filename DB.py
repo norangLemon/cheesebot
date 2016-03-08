@@ -37,13 +37,13 @@ def createDB(cursor):
 
 def printDB(cursor):
     num = 0
-    print("ID\t\t\tnick\t\tname\t\taffection\tlast pat\tfirst pat")
-    print("--------------------------------------------")
+    print("%10s%20s%20s%40s%20s%20s" %("affection", "last pat", "first pat", "ID", "nick", "name"))
+    print("-"*130)
     for row in cursor.execute("SELECT * FROM People ORDER BY affection"):
-        print("%s\t\t\t\t\t%s\t\t%s\t\t%d\t%s\t%s"
-                % (row[0], row[1], row[2], row[3], row[4], row[5]))
+        print("%10s%20s%20s%40s%20s%20s"
+                % (row[3], row[4], row[5], row[0], row[1], row[2]))
         num += 1
-    print("--------------------------------------------")
+    print("-"*130)
     print("total: %d" %num)
 
 

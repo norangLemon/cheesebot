@@ -87,7 +87,9 @@ def react_sleep(msg):
         return False
 
 def react_howMuchLove(msg):
-    react = Value.howMuchLoveMsg(msg, getPerson(msg).getAffection())
+    affection = getPerson(msg).getAffection()
+    prtLog(msg.nick+": "+str(affection))
+    react = Value.howMuchLoveMsg(msg, affection)
     send_msg(msg.channel, react)
 
 def run():
@@ -142,7 +144,7 @@ def run():
             elif msg.msg == NICK + ", 자러 갈 시간이야":
                 if react_sleep(msg):
                     return
-            elif msg.msg == NICK + ", 나 얼마나 좋아해?":
+            elif msg.msg == NICK + ", 나 얼마나 좋아해?" or  msg.msg == NICK +"야 나 좋아해?":
                 react_howMuchLove(msg)
 
         else:

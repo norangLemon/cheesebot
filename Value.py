@@ -51,8 +51,14 @@ def howMuchLoveMsg(msg, affection):
         list = [msg.nick+"님 엄청 좋아한다냥!", "당연히 최고 좋아한다냥!", "냐앙..(부끄)//ㅅ//"]
     elif affection > MAX_AFFECTION *1/3:
         list = ["헤헤.. "+msg.name+"님이랑 나랑은 꽤 친하지요냥?", "우웅.. 참치 다음으로 좋아한다냥!>ㅅ<"]
-    elif affection > MIN_AFFECTION *1/3:
-        list = ["후웅..?", "좀 더 쓰다듬고 나서 물어봐달라냥!", msg.nick+"님이랑 나랑 아는 사이었냥..?"]
+    elif affection > MAX_AFFECTION * 1/4:
+        list = ["비밀이다냥!>ㅅ<", msg.name+"님은 좋은 사람이다냥! 그치만 좀 더 놀아주면 좋겠다냥!"]
+    elif affection > MAX_AFFECTION* 1/5:
+        list = ["좀 더 친해졌으면 좋겠다냥!", "냐아웅!ㅇㅅㅇ","헤에?ㅇㅅㅇ?"]
+    elif affection >MIN_AFFECTION * 1/5:
+        list = ["오늘 처음 본 거 같은데냥...?", msg.nick+"님이랑 나랑 아는 사이었냥..?", "좀 더 쓰다듬고 나서 물어봐달라냥!"]
+    elif affection > MIN_AFFECTION *1/4:
+        list = ["후웅..?", "히잉.. 솔직히 잘 모르겠다냥..."]
     elif affection > MIN_AFFECTION * 4/5:
         list = ["흥!",  msg.nick +"님한테는 지금 삐져있다냥!", "ㅡㅅㅡ..."]
     else:
