@@ -18,7 +18,7 @@ def randNoQuitMsg(msg):
     return random.choice(list)
 
 def randHateMsg(msg):
-    list = ["캬옹!", "와아아옹!!!-ㅅ-", "냐아아!!=ㅅ="]
+    list = ["캬옹!", "와아아옹!!!-ㅅ-", "냐아아!!=ㅅ=", "(˃̣̣̣̣̣̣ㅅ˂̣̣̣̣̣̣ ू)"]
     return random.choice(list)
 
 def randSatisfyMsg(msg):
@@ -66,4 +66,8 @@ def howMuchLoveMsg(msg, affection):
     return random.choice(list)
 def randAnnoyedMsg(msg):
     list = ["자꾸 그러면 삐진다냥!", "귀찮게 하지 말라냐앙!", "히잉.. "+msg.nick+"님은 할 일도 없냥?!"]
+    return random.choice(list)
+
+def randGiveOpMsg(msg):
+    list = ["옵 여기있다냥~! =(>ㅅㅇ=)/*", "옵 드렸다냥!>ㅅ<", "옵 줬으니 쓰담쓰담 해달라냥♥"]
     return random.choice(list)

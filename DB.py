@@ -25,7 +25,7 @@ def search(msg):
     elif len(result) == 0:
         prtLog("There's no '%s' in DB" %msg.nick)
     else:
-        prtErr("nick %s:\n %s" %str(result))
+        prtErr("nick %s:\n %s" %(msg.nick, str(result)))
     return None
 
 def createDB(cursor):

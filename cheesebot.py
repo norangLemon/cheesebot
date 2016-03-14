@@ -92,6 +92,10 @@ def react_howMuchLove(msg):
     react = Value.howMuchLoveMsg(msg, affection)
     send_msg(msg.channel, react)
 
+def react_giveOp(msg):
+    irc.send(bytes('MODE ' + msg.channel + ' +o ' + msg.nick + '\n', UTF8))
+    send_msg(msg.channel, Value.randGiveOpMsg(msg))
+    
 def run():
     while 1:
         try:
@@ -146,6 +150,8 @@ def run():
                     return
             elif msg.msg == NICK + ", 나 얼마나 좋아해?" or  msg.msg == NICK +"야 나 좋아해?":
                 react_howMuchLove(msg)
+            elif msg.msg == NICK + ", 옵줘" or msg.msg == NICK + "야 옵줘":
+                react_giveOp(msg)
 
         else:
             prtLog(str(msg))
