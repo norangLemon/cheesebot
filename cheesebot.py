@@ -14,14 +14,17 @@ def pong():
 
 def join(channel, txt):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
+    chanlist.append(channel)
     send_msg(channel, txt)
 
 def part(channel, txt):
     send_msg(channel, txt)
+    chanlist.remove(channel)
     irc.send(bytes("PART %s\r\n" %channel, UTF8))
 
-def quit(channel, txt):
-    send_msg(channel, txt)
+def quit(txt):
+    for chan in chanlist:
+        send_msg(chan, txt)
     irc.send(bytes("QUIT\r\n", UTF8))
 
 def react_part(msg):
@@ -95,13 +98,17 @@ def react_howMuchLove(msg):
 def react_giveOp(msg):
     irc.send(bytes('MODE ' + msg.channel + ' +o ' + msg.nick + '\n', UTF8))
     send_msg(msg.channel, Value.randGiveOpMsg(msg))
+
+def react_eating(msg):
+    getPerson(msg).plus(MAX)
+    send_msg(msg.channel, Value.randEatingMsg(msg))
     
 def run():
     while 1:
         try:
             ircmsg_raw = irc.recv(8192).decode(UTF8)
         except KeyboardInterrupt:
-            quit(CHANNEL, "난 자러 간다냥!")
+            quit("난 자러 간다냥!")
             prtLog("ctrl+c")
             return
 
@@ -136,6 +143,8 @@ def run():
                 react_RUOK(msg)
             elif msg.msg == "돌아가!" or msg.msg == "사라져버려!":
                 react_goAway(msg)
+            elif msg.msg == NICK +"야 참치 먹자" or msg.msg == "참치 먹자" or msg.msg == NICK + ", 참치 먹자":
+                react_eating(msg)
             elif msg.msg.find("참치") != -1:
                 react_tuna(msg)
 
@@ -158,6 +167,7 @@ def run():
                 
 
 
+chanlist =[CHANNEL]
 if __name__ == "__main__":
     irc_raw = socket.socket()
     irc_raw.connect((HOST, PORT))
@@ -166,5 +176,4 @@ if __name__ == "__main__":
     irc.send(bytes("USER %s %s %s : %s\r\n" %(ID, ID, HOST, ID), UTF8))
     print("연결되었습니다.")
     join(CHANNEL, "일어났다!")
-
     run()

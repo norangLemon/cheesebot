@@ -71,3 +71,7 @@ def randAnnoyedMsg(msg):
 def randGiveOpMsg(msg):
     list = ["옵 여기있다냥~! =(>ㅅㅇ=)/*", "옵 드렸다냥!>ㅅ<", "옵 줬으니 쓰담쓰담 해달라냥♥"]
     return random.choice(list)
+
+def randEatingMsg(msg):
+    list = ["0ㅅ0)!! 챱챱", ">ㅅ< "+msg.nick+"님 고맙다냥!", "와아아앙! >ㅅ< 챱챱챱"]
+    return random.choice(list)

@@ -3,7 +3,7 @@ import logging.handlers
 import datetime
 
 logger = logging.getLogger('CheeseLoger')
-fileHandler = logging.FileHandler('logs/%s.log' 
+fileHandler = logging.FileHandler('logs/%s~.log' 
         %datetime.datetime.today().strftime("%y-%m-%d"))
 streamHandler = logging.StreamHandler()
 

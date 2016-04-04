@@ -56,6 +56,8 @@ class Person():
         self.affection -= amount
         if self.affection < MIN_AFFECTION:
             self.affection = MIN_AFFECTION
+        elif self.affection < MIN_AFFECTION:
+            self.affection = MIN_AFFECTION
         updateData(self)
         return result
 
