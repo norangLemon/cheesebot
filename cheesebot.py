@@ -25,6 +25,7 @@ def part(channel, txt):
     irc.send(bytes("PART %s\r\n" %channel, UTF8))
 
 def quit(txt):
+    send_msg(CHAN, txt)
     irc.send(bytes("QUIT\r\n", UTF8))
 
 def react_part(msg):
@@ -130,7 +131,8 @@ def run():
                 commands = msg.msg.split()
                 if commands[0] in ["!식단", "!메뉴"]:
                     menu = snuMenu(msg.msg[4:])
-                    send_msg(msg.channel, menu.getMenu())
+                    for line in menu.getMenu().split('\n'):
+                        send_msg(msg.channel, line)
                 
                 elif commands[0][1:] in daumDic.map_dic.keys():
                     search = daumDic(msg.msg[1:])
@@ -142,7 +144,8 @@ def run():
 
                 elif commands[0] == "!날씨":
                     weather = naverWeather(msg.msg[4:])
-                    send_msg(msg.channel, weather.getWeather())
+                    for line in weather.getWeather().split('\n'):
+                        send_msg(msg.channel, line) 
 
         else:
             prtLog(str(msg))
