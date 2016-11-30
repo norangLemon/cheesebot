@@ -5,6 +5,11 @@ from setting import *
 from Message import *
 from Log import *
 
+from snuMenu import *
+from daumDic import *
+from naverWeather import *
+import arith
+
 def send_msg(channel, txt):
     irc.send(bytes('PRIVMSG ' + channel + ' :' + txt + '\n', UTF8))
 
@@ -120,6 +125,24 @@ def run():
 
             elif msg.msg == NICK + ", 옵줘" or msg.msg == NICK + "야 옵줘":
                 react_giveOp(msg)
+
+            elif msg.msg[0] == '!':
+                commands = msg.msg.split()
+                if commands[0] in ["!식단", "!메뉴"]:
+                    menu = snuMenu(msg.msg[4:])
+                    send_msg(msg.channel, menu.getMenu())
+                
+                elif commands[0][1:] in daumDic.map_dic.keys():
+                    search = daumDic(msg.msg[1:])
+                    send_msg(msg.channel, search.getResult())
+
+                elif commands[0] == "!계산":
+                    result = arith.calculate(msg.msg[4:])
+                    send_msg(msg.channel, result)
+
+                elif commands[0] == "!날씨":
+                    weather = naverWeather(msg.msg[4:])
+                    send_msg(msg.channel, weather.getWeather())
 
         else:
             prtLog(str(msg))
