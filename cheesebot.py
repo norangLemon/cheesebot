@@ -4,7 +4,6 @@ import Value
 from setting import *
 from Message import *
 from Log import *
-from Person import *
 
 def send_msg(channel, txt):
     irc.send(bytes('PRIVMSG ' + channel + ' :' + txt + '\n', UTF8))
@@ -14,30 +13,25 @@ def pong():
 
 def join(channel, txt):
     irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
-    chanlist.append(channel)
     send_msg(channel, txt)
 
 def part(channel, txt):
     send_msg(channel, txt)
-    chanlist.remove(channel)
     irc.send(bytes("PART %s\r\n" %channel, UTF8))
 
 def quit(txt):
-    for chan in chanlist:
-        send_msg(chan, txt)
     irc.send(bytes("QUIT\r\n", UTF8))
 
 def react_part(msg):
     prtLog("part: "+msg.nick)
     part(msg.channel, Value.randPartMsg(msg))
-    getPerson(msg).minus(MEDIUM)
 
 def react_invite(msg):
     prtLog(msg)
     prtLog("invite"+msg.nick)
-    irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
+    if msg.channel == "#norang":
+        irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
     send_msg(msg.channel, Value.randJoinMsg(msg))
-    getPerson(msg).plus(LITTLE)
 
 def react_mode(msg):
     if msg.msg == "+o " + NICK:
@@ -49,10 +43,7 @@ def react_mode(msg):
 
 def react_RUOK(msg):
     prtLog("RUOK: "+msg.nick)
-    if getPerson(msg).plus(LITTLE):
-        send_msg(msg.channel, Value.randOKMsg(msg))
-    else:
-        send_msg(msg.clue.randAnnoyedMsg(msg))
+    send_msg(msg.channel, Value.randOKMsg(msg))
 
 def react_tuna(msg):
     send_msg(msg.channel, Value.randTunaMsg(msg))
@@ -60,22 +51,14 @@ def react_tuna(msg):
 def react_goAway(msg):
     prtLog("goAway: "+msg.nick)
     part(msg.channel, Value.randPartMsg(msg))
-    getPerson(msg).minus(MEDIUM)
 
 def react_loveU(msg):
     prtLog("pat: "+msg.nick)
-    value = getPerson(msg).plus(MAX)
-    if value:
-        send_msg(msg.channel, Value.randSatisfyMsg(msg))
-    else:
-        send_msg(msg.channel, Value.randAnnoyedMsg(msg))
+    send_msg(msg.channel, Value.randSatisfyMsg(msg))
     
 def react_dog(msg):
     prtLog("dog: "+msg.nick)
-    if getPerson(msg).minus(LITTLE):
-        send_msg(msg.channel, Value.randHateMsg(msg))
-    else:
-        send_msg(msg.channel, Value.randAnnoyedMsg(msg))
+    send_msg(msg.channel, Value.randHateMsg(msg))
 
 def react_sleep(msg):
     prtLog("sleep: "+msg.nick)
@@ -83,24 +66,14 @@ def react_sleep(msg):
         quit(msg.channel, Value.randQuitMsg(msg))
         return True
     else:
-        if getPerson(msg).minus(MAX):
-            send_msg(msg.channel, Value.randNoQuitMsg(msg))
-        else:
-            send_msg(msg.channel, Value.randAnnoyedMsg(msg))
+        send_msg(msg.channel, Value.randNoQuitMsg(msg))
         return False
-
-def react_howMuchLove(msg):
-    affection = getPerson(msg).getAffection()
-    prtLog(msg.nick+": "+str(affection))
-    react = Value.howMuchLoveMsg(msg, affection)
-    send_msg(msg.channel, react)
 
 def react_giveOp(msg):
     irc.send(bytes('MODE ' + msg.channel + ' +o ' + msg.nick + '\n', UTF8))
     send_msg(msg.channel, Value.randGiveOpMsg(msg))
 
 def react_eating(msg):
-    getPerson(msg).plus(MAX)
     send_msg(msg.channel, Value.randEatingMsg(msg))
     
 def run():
@@ -157,17 +130,12 @@ def run():
             elif msg.msg == NICK + ", 자러 갈 시간이야":
                 if react_sleep(msg):
                     return
-            elif msg.msg == NICK + ", 나 얼마나 좋아해?" or  msg.msg == NICK +"야 나 좋아해?":
-                react_howMuchLove(msg)
             elif msg.msg == NICK + ", 옵줘" or msg.msg == NICK + "야 옵줘":
                 react_giveOp(msg)
 
         else:
             prtLog(str(msg))
                 
-
-
-chanlist =[CHANNEL]
 if __name__ == "__main__":
     irc_raw = socket.socket()
     irc_raw.connect((HOST, PORT))
@@ -175,5 +143,5 @@ if __name__ == "__main__":
     irc.send(bytes("NICK " + NICK + "\r\n", UTF8))
     irc.send(bytes("USER %s %s %s : %s\r\n" %(ID, ID, HOST, ID), UTF8))
     print("연결되었습니다.")
-    join(CHANNEL, "일어났다!")
+    join(CHAN, "일어났다!")
     run()

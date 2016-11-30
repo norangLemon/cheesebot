@@ -34,7 +34,7 @@ class Message:
                 self.ID = parse.group(2)
                 self.channel = parse.group(4)
                 self.msg = parse.group(5)
-                if self.ID == ID_CON_BOT:
+                if self.ID == ID:
                     con_parse = re.match('<(.+?)> (.+)', self.msg)
                     if con_parse:
                         self.nick = con_parse.group(1)
