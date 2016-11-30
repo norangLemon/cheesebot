@@ -1,4 +1,3 @@
-#-*- coding: utf-8 -*-
 import socket, ssl, re
 import Value
 from setting import *
