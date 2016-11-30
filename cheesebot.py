@@ -60,15 +60,6 @@ def react_dog(msg):
     prtLog("dog: "+msg.nick)
     send_msg(msg.channel, Value.randHateMsg(msg))
 
-def react_sleep(msg):
-    prtLog("sleep: "+msg.nick)
-    if msg.ID == ID_NORANG:
-        quit(msg.channel, Value.randQuitMsg(msg))
-        return True
-    else:
-        send_msg(msg.channel, Value.randNoQuitMsg(msg))
-        return False
-
 def react_giveOp(msg):
     irc.send(bytes('MODE ' + msg.channel + ' +o ' + msg.nick + '\n', UTF8))
     send_msg(msg.channel, Value.randGiveOpMsg(msg))
@@ -127,9 +118,6 @@ def run():
             elif msg.msg == "멍멍":
                 react_dog(msg)
 
-            elif msg.msg == NICK + ", 자러 갈 시간이야":
-                if react_sleep(msg):
-                    return
             elif msg.msg == NICK + ", 옵줘" or msg.msg == NICK + "야 옵줘":
                 react_giveOp(msg)
 
