@@ -41,7 +41,7 @@ class snuMenu():
             "302동식당":5, "솔밭간이식당":6, "동원관식당":7, "감골식당":8,
                     # 위탁식당의 식당명에 따른 번호 매핑
             "서당골":1, "두레미담":2, "301동식당":3,
-            "예술계식당":4, "공대간이식당":5, "상아회관":6, "220동식당":7
+            "예술계식당":4, "공대간이식당":6, "상아회관":7, "220동식당":9
             }
 
     map_price = {   # 가격 매핑
@@ -128,14 +128,20 @@ class snuMenu():
         if not string:
             return "없음"
 
-        parsed = re.split(" |\n|/", string)   # space와 개행문자로 split한다
-        
-        output_list = list(map( 
-                        (lambda s: 
-                            s[1:].replace("(*)", "[채식]")+'('+snuMenu.map_price[s[0]]+')'),
-                        parsed)
-                        ) 
+        parsed = re.split("\n|/", string)   # space와 개행문자로 split한다
         output = ""
-        for o in output_list:
-            output += o + " "
+
+        for line in parsed:
+            menu_name_start = 1
+            price_string = ""
+            if line[0] in snuMenu.map_price.keys():
+                menu_name_start = 1
+                price_string = snuMenu.map_price[line[0]]
+            else:
+                # 7000 다음에 줄바꿈이 있음
+                space_index = line.find(' ')
+                price_string = line[:space_index] + '원'
+                menu_name_start = space_index + 1
+            output += line[menu_name_start:].replace("(*)", "[채식]") + '({}) '.format(price_string)
+
         return output
