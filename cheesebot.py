@@ -24,7 +24,8 @@ def part(channel, txt):
     irc.send(bytes("PART %s\r\n" %channel, UTF8))
 
 def quit(txt):
-    send_msg(CHAN, txt)
+    for ch in CHAN:
+        send_msg(ch, txt)
     irc.send(bytes("QUIT\r\n", UTF8))
 
 def react_part(msg):
@@ -34,7 +35,7 @@ def react_part(msg):
 def react_invite(msg):
     prtLog(msg)
     prtLog("invite"+msg.nick)
-    if msg.channel == "#norang":
+    if msg.channel in CHAN:
         irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
     send_msg(msg.channel, Value.randJoinMsg(msg))
 
@@ -156,5 +157,6 @@ if __name__ == "__main__":
     irc.send(bytes("NICK " + NICK + "\r\n", UTF8))
     irc.send(bytes("USER %s %s %s : %s\r\n" %(ID, ID, HOST, ID), UTF8))
     print("연결되었습니다.")
-    join(CHAN, "일어났다!")
+    for ch in CHAN:
+        join(ch, "일어났다!")
     run()
