@@ -1,7 +1,15 @@
 setting.py
 *.swp
 *.pyc
+*.pyr
 *.db
 *.log
+*.cfg
 
+bin/
+lib/
+lib64
+share/
 __pycache__/
+pip-selfcheck.json
+test.py
