@@ -7,7 +7,7 @@ import math
 
 def calculate(expr):
     if not expr:
-        return "계산할 수식을 넣어달라냥! '/계산 1+1' 처럼 해주면 된다냥!"
+        return "계산할 수식을 넣어달라냥! '!계산 1+1' 처럼 해주면 된다냥!"
     try:
         return str(eval_expr(expr))
     except SyntaxError:

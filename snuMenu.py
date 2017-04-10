@@ -99,7 +99,7 @@ class snuMenu():
         # 해당 식당의 아침, 점심, 저녁 메뉴를 읽어들인다
         if self.belong == 3:
             # 잘못된 명령어
-            return "식당 이름을 알맞게 입력해달라냥! '/식단 학관'같이 해달라냥!"
+            return "식당 이름을 알맞게 입력해달라냥! '!식단 학관'같이 해달라냥!"
         
         result = '<'+ self.name + '> '
         index = snuMenu.map_index[self.name]
