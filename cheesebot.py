@@ -46,7 +46,8 @@ def react_mode(msg):
         send_msg(msg.channel, Value.randDEOPMsg(msg))
     elif msg.msg.find(NICK) != -1:
         send_msg(msg.channel, Value.randCuriousMsg(msg))
-
+    elif msg.msg.split()[0] == "+k":
+        addChanList(msg.channel, msg.msg.split(' ', maxsplit = 1)[1])
 def react_RUOK(msg):
     prtLog("RUOK: "+msg.nick)
     send_msg(msg.channel, Value.randOKMsg(msg))
@@ -103,7 +104,7 @@ def run():
             continue
 
         msg = Message(ircmsg_raw)
-        print(ircmsg_raw)
+        # print(ircmsg_raw)
         
         if msg.msgType == "INVITE":
             react_invite(msg)
@@ -148,8 +149,8 @@ def run():
                     for line in weather.getWeather().split('\n'):
                         send_msg(msg.channel, line) 
 
-        # else:
-        #     prtLog(str(msg))
+        else:
+            prtLog(str(msg))
                 
 if __name__ == "__main__":
     irc_raw = socket.socket()
