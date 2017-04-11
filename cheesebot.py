@@ -7,6 +7,7 @@ from Log import *
 from snuMenu import *
 from daumDic import *
 from naverWeather import *
+from db import *
 import arith
 
 def send_msg(channel, txt):
@@ -15,8 +16,8 @@ def send_msg(channel, txt):
 def pong():
     irc.send(bytes("PONG :pingpong\n", UTF8))
 
-def join(channel, txt):
-    irc.send(bytes("JOIN %s\r\n" %channel, UTF8))
+def join(channel, txt, pw = None):
+    irc.send(bytes("JOIN %s %s\r\n" %(channel, pw), UTF8))
     send_msg(channel, txt)
 
 def part(channel, txt):
@@ -35,9 +36,8 @@ def react_part(msg):
 def react_invite(msg):
     prtLog(msg)
     prtLog("invite"+msg.nick)
-    if msg.channel in CHAN:
-        irc.send(bytes("JOIN %s\r\n" %msg.channel, UTF8))
-    send_msg(msg.channel, Value.randJoinMsg(msg))
+    if msg.channel in getChanList().keys():
+        join(msg.channel, Value.randJoinMsg(msg), getChanList()[msg.channel])
 
 def react_mode(msg):
     if msg.msg == "+o " + NICK:
@@ -103,6 +103,7 @@ def run():
             continue
 
         msg = Message(ircmsg_raw)
+        print(ircmsg_raw)
         
         if msg.msgType == "INVITE":
             react_invite(msg)
@@ -147,8 +148,8 @@ def run():
                     for line in weather.getWeather().split('\n'):
                         send_msg(msg.channel, line) 
 
-        else:
-            prtLog(str(msg))
+        # else:
+        #     prtLog(str(msg))
                 
 if __name__ == "__main__":
     irc_raw = socket.socket()
@@ -157,6 +158,6 @@ if __name__ == "__main__":
     irc.send(bytes("NICK " + NICK + "\r\n", UTF8))
     irc.send(bytes("USER %s %s %s : %s\r\n" %(ID, ID, HOST, ID), UTF8))
     print("연결되었습니다.")
-    for ch in CHAN:
-        join(ch, "일어났다!")
+    for ch, pw in getChanList().items():
+        join(ch, "일어났다!", pw)
     run()
